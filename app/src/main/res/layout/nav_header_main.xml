@@ -17,7 +17,6 @@
         android:layout_height="80dp"
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/myhead"
         app:border_width="2dp"
         app:border_color="@color/colorPrimary" />
 

@@ -1,5 +1,6 @@
 package com.example.administrator.mygaodemap.View;
 
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,10 +29,13 @@ import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.bumptech.glide.Glide;
 import com.example.administrator.mygaodemap.Adapter.ListMenuAdapter;
 import com.example.administrator.mygaodemap.Map.Location;
 import com.example.administrator.mygaodemap.R;
+import com.example.administrator.mygaodemap.Util.CircleImageView;
 import com.example.administrator.mygaodemap.Util.DialogCreate;
+import com.example.administrator.mygaodemap.Util.ShowUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView lv_menu;
     private List<com.example.administrator.mygaodemap.Bean.Menu> menuList;
+    private TextView tv_statue;
+    private Button btn_ticket,btn_location,btn_saveFace;
+    private CircleImageView img_person;
 
     private MapView mMapView = null;
     private AMap aMap;
@@ -50,8 +58,86 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initMenu();
+        initStatue();
+        initBtn();
         initMap(savedInstanceState);
         initMapOperation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
+        mMapView.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
+        mMapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
+        mMapView.onDestroy();
+    }
+
+    private void initBtn() {
+        btn_ticket= (Button) findViewById(R.id.btn_ticket);
+        btn_location= (Button) findViewById(R.id.btn_location);
+        btn_saveFace= (Button) findViewById(R.id.btn_saveFace);
+        btn_ticket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogCreate.fillMessage(MainActivity.this);
+            }
+        });
+        btn_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btn_saveFace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    private void initStatue() {
+        tv_statue= (TextView) findViewById(R.id.tv_statue);
+        tv_statue.setText("当前暂无订单，请您下单");
+        initStatueOperation(tv_statue,0);
+    }
+
+    private void initStatueOperation(final TextView tv_statue, final int type){
+
+        tv_statue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (type){
+                    case 0:
+                        tv_statue.setText("当前暂无订单，请您下单");
+                        initStatueOperation(tv_statue,1);
+                        break;
+                    case 1:
+                        tv_statue.setText("飞机尚在路途中，请等待.......点击查看");
+                        initStatueOperation(tv_statue,2);
+                        break;
+                    case 2:
+                        tv_statue.setText("飞机已到达指定地点，点击确认");
+                        ShowUtil.showSnack(v,tv_statue.getText().toString());
+                        initStatueOperation(tv_statue,0);
+                        break;
+                }
+            }
+        });
     }
 
     private void initMap(Bundle savedInstanceState){
@@ -82,15 +168,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMenu(){
-        //菜单
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        initMenuStart();
+        initMenuHead();
+        initMenuList();
+        initMenuBottom();
+    }
 
+    private void initMenuBottom() {
+        //音效测试
+        ImageView img_ads= (ImageView) findViewById(R.id.img_ads);
+        Glide.with(this).load(R.drawable.test).asBitmap().into(img_ads);
+        final TextView tv_music_name=(TextView) findViewById(R.id.tv_music_name);
+        img_ads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri notification0 = Uri.parse("android.resource://"+MainActivity.this.getPackageName()+"/"+ R.raw.pi);
+                Ringtone r = RingtoneManager.getRingtone(MainActivity.this.getApplicationContext(), notification0);
+                r.play();
+            }
+        });
+        img_ads.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                DialogCreate.rawList(MainActivity.this,tv_music_name);
+                return false;
+            }
+        });
+    }
+
+    private void initMenuList() {
         lv_menu= (ListView) findViewById(R.id.lv_menu);
         if (menuList==null){
             menuList=new ArrayList<>();
@@ -109,25 +215,25 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(Gravity.START);
             }
         });
-        //音效测试
-        ImageView img_ads= (ImageView) findViewById(R.id.img_ads);
-        final TextView tv_music_name=(TextView) findViewById(R.id.tv_music_name);
-        img_ads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri notification0 = Uri.parse("android.resource://"+MainActivity.this.getPackageName()+"/"+ R.raw.pi);
-                Ringtone r = RingtoneManager.getRingtone(MainActivity.this.getApplicationContext(), notification0);
-                r.play();
-            }
-        });
-        img_ads.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                DialogCreate.rawList(MainActivity.this,tv_music_name);
-                return false;
-            }
-        });
     }
+
+    private void initMenuHead() {
+        img_person=(CircleImageView) findViewById(R.id.img_person);
+        Glide.with(this).load(R.drawable.myhead).asBitmap().into(img_person);
+    }
+
+    private void initMenuStart() {
+        // /菜单
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -152,28 +258,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
-        mMapView.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
-        mMapView.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
-        mMapView.onPause();
     }
 
     @Override

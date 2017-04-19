@@ -8,7 +8,8 @@ public class Ticket {
 
     private long id;
     private String createAt;
-    private int weight;
+    private String weight;
+//    private int weight;
     private double price;
     private String fromAt;
     private String toAt;
@@ -23,7 +24,8 @@ public class Ticket {
     private String bookState;
     private String fromWho;
     private String toWho;
-    private long number;
+    private String number;
+//    private long number;
 
 //    public Ticket(long id, String createAt, int weight, double price, String fromAt, String toAt, double distance, String type, String wantTime, String realStartTime, String realAtTime, int wasteTime, String airplaneType, String note, String bookState, String fromWho, String toWho, long number) {
 //        this.id = id;
@@ -62,11 +64,11 @@ public class Ticket {
         this.createAt = createAt;
     }
 
-    public int getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 
@@ -182,11 +184,11 @@ public class Ticket {
         this.toWho = toWho;
     }
 
-    public long getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(long number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 }
