@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    tools:context=".View.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/amap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.amap.api.maps.MapView>
+
+    <android.support.v7.widget.CardView
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/cardview_default_radius"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="飞机尚在路途中，请等待......"
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/yuan_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="立即下单"
+        android:textColor="#fff"
+        android:gravity="center" />
+
+    <Button
+        android:text="定位"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/little_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+    <Button
+        android:text="位置"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/little_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+
+</RelativeLayout>
