@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
 
-        <!--<service android:name=".util.SocketService" />-->
+        <service android:name=".Service.SocketService" />
         <!--<service android:name="com.amap.api.location.APSService" />-->
 
         <!--<meta-data-->

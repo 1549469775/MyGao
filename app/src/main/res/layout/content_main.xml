@@ -29,10 +29,8 @@
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tv_statue"
-                android:text="当前暂无订单，请您下单"
+                android:text="当前暂无订单，请您下单\n"
                 android:padding="20dp"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:maxLines="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -48,7 +46,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/yuan_button"
+        android:background="@drawable/ridenow"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,10 +59,9 @@
         android:text="定位"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
-        android:drawableTop="@drawable/ic_my_location_black_24dp"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@drawable/refresh_location_bg"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:gravity="center" />
     <Button
         android:id="@+id/btn_saveFace"
@@ -72,10 +69,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="30dp"
-        android:drawableTop="@drawable/ic_camera_alt_black_24dp"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center" />
+        android:background="@drawable/refresh_location_bg"
+        android:layout_width="70dp"
+        android:layout_height="70dp" />
 
 </RelativeLayout>

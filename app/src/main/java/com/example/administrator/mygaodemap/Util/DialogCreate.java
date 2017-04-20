@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.example.administrator.mygaodemap.Bean.BeanUtil;
 import com.example.administrator.mygaodemap.Bean.Ticket;
+import com.example.administrator.mygaodemap.Interface.JudgeListener;
 import com.example.administrator.mygaodemap.R;
 import com.example.administrator.mygaodemap.View.MainActivity;
 
@@ -96,7 +98,11 @@ public class DialogCreate {
 
     //地图选择起点终点的对话框
     private static int position=0;
+    private static boolean isStart=true;
+    private static boolean isEng=true;
+
     public static void mapAction(final Context context, final AMap aMap, LatLng latLng){
+        position=0;
         final String[] tit=new String[]{"起点","终点"};
         final LatLng latLng1=latLng;
         AlertDialog dialog=new AlertDialog.Builder(context)
@@ -112,20 +118,34 @@ public class DialogCreate {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (position){
                             case 0:
-                                MarkerOptions otMarkerOptions0 = new MarkerOptions();
-                                otMarkerOptions0.position(latLng1);
-//                                otMarkerOptions0.icon(BitmapDescriptorFactory.fromBitmap(
-//                                        BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_st)));
-                                aMap.addMarker(otMarkerOptions0);
-                                aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng1));
+                                if (isStart){
+                                    MarkerOptions otMarkerOptions0 = new MarkerOptions();
+                                    otMarkerOptions0.position(latLng1);
+                                    otMarkerOptions0.title("start");
+                                    otMarkerOptions0.icon(BitmapDescriptorFactory.fromBitmap(
+                                            BitmapFactory.decodeResource(context.getResources(), R.drawable.amap_start)));
+                                    aMap.addMarker(otMarkerOptions0);
+                                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng1));
+
+                                    isStart=false;
+                                }else {
+                                    ShowUtil.showToast(context.getApplicationContext(),"已存在起点");
+                                }
                                 break;
                             case 1:
-                                MarkerOptions otMarkerOptions1 = new MarkerOptions();
-                                otMarkerOptions1.position(latLng1);
-//                                otMarkerOptions1.icon(BitmapDescriptorFactory.fromBitmap(
-//                                        BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_en)));
-                                aMap.addMarker(otMarkerOptions1);
-                                aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng1));
+                                if (isEng){
+                                    MarkerOptions otMarkerOptions1 = new MarkerOptions();
+                                    otMarkerOptions1.position(latLng1);
+                                    otMarkerOptions1.title("end");
+                                    otMarkerOptions1.icon(BitmapDescriptorFactory.fromBitmap(
+                                            BitmapFactory.decodeResource(context.getResources(), R.drawable.amap_end)));
+                                    aMap.addMarker(otMarkerOptions1);
+                                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng1));
+
+                                    isEng=false;
+                                }else {
+                                    ShowUtil.showToast(context.getApplicationContext(),"已存在终点");
+                                }
                                 break;
                         }
                     }
@@ -141,7 +161,13 @@ public class DialogCreate {
                 .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        marker.remove();
+                        if (marker.getTitle().equals("start")){
+                            isStart=true;
+                            marker.remove();
+                        }else if (marker.getTitle().equals("end")){
+                            isEng=true;
+                            marker.remove();
+                        }
                     }
                 })
                 .create();
@@ -149,7 +175,7 @@ public class DialogCreate {
     }
 
     private static Ticket ticket;
-    public static void fillMessage(final Context context){
+    public static void fillMessage(final Context context, final JudgeListener listener){
         ticket=new Ticket();
         View view= LayoutInflater.from(context).inflate(R.layout.layout_ticket,null,false);
         final EditText weight=(EditText)view.findViewById(R.id.weight);
@@ -191,15 +217,29 @@ public class DialogCreate {
                         ticket.setNumber(phone.getText().toString());
                         ticket.setNote(beizhu.getText().toString());
                         BeanUtil.setTicket(ticket);
+                        ShowUtil.showLog("ticket",ticket.getType()+"    "+
+                                ticket.getFromWho()+"    "+
+                                ticket.getToWho()+"    "+
+                                ticket.getWantTime()+"    "+
+                                ticket.getWeight()+"    "+
+                                ticket.getNumber()+"    "+
+                                ticket.getNote()+"    ");
+                        listener.onSuccess();
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        listener.onError(new Exception("未下单"));
                     }
                 })
                 .create();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                listener.onError(new Exception("未下单"));
+            }
+        });
         dialog.show();
     }
 

@@ -55,7 +55,6 @@ public class Menu {
         }else {
             context.startActivity(new Intent(context,aClass));
         }
-
     }
 
 
